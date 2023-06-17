@@ -1,0 +1,39 @@
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: seq
+  namespace: common-services
+  labels:
+    app: seq
+spec:
+  restartPolicy: Always
+  containers:
+  - name: seq
+    image: datalust/seq:2022.1
+    ports:
+    - containerPort: 80
+    - containerPort: 5341
+    env:
+    - name: ACCEPT_EULA
+      value: "Y"
+    volumeMounts:
+    - mountPath: "/data"
+      name: volume
+  volumes:
+    - name: volume
+      persistentVolumeClaim:
+        claimName: seq-local-storage-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: seq-dev
+  namespace: common-services
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: seq

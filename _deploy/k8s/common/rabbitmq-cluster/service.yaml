@@ -1,0 +1,12 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: rabbitmq-dev-dashboard
+spec:
+  type: ClusterIP
+  ports:
+    - port: 15672
+      targetPort: 15672
+  selector:
+    app.kubernetes.io/name: rabbitmq-dev

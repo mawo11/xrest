@@ -1,0 +1,26 @@
+# ---
+# kind: Service
+# apiVersion: v1
+# metadata:
+#   name: rabbitmq-dev-dashboard
+# spec:
+#   type: NodePort
+#   ports:
+#     - port: 15672
+#       targetPort: 15672
+#       nodePort: 30001
+#   selector:
+#     app.kubernetes.io/name: rabbitmq-dev
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: rabbitmq-dev-remote
+spec:
+  type: NodePort
+  ports:
+    - port: 5672
+      targetPort: 5672
+      nodePort: 31672
+  selector:
+    app.kubernetes.io/name: rabbitmq-dev

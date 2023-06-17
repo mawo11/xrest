@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <UserSecretsId>a1283247-e37c-4ee6-9009-b6862c8f6471</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..\..</DockerfileContext>
+    <Platforms>AnyCPU;x64</Platforms>
+    <Nullable>enable</Nullable>
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <ImplicitUsings>true</ImplicitUsings>
+    <Version>3.1.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Consul" Version="1.6.10.9" />
+    <PackageReference Include="MediatR" Version="12.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.15" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="6.0.15" />
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="6.0.16" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.11.1" />
+    <PackageReference Include="NLog" Version="5.2.0" />
+    <PackageReference Include="NLog.Database" Version="5.2.0" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="5.3.0" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.0" />
+    <PackageReference Include="RestEase" Version="1.5.6" />
+    <PackageReference Include="Seq.Extensions.Logging" Version="6.1.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\XRest.Authentication\XRest.Authentication.csproj" />
+    <ProjectReference Include="..\XRest.Consul\XRest.Consul.csproj" />
+    <ProjectReference Include="..\XRest.Identity.App\XRest.Identity.App.csproj" />
+    <ProjectReference Include="..\XRest.Identity.Contracts\XRest.Identity.Contracts.csproj" />
+    <ProjectReference Include="..\XRest.Identity.Infratructure\XRest.Identity.Infratructure.csproj" />
+    <ProjectReference Include="..\XRest.Restaurants.Contracts\XRest.Restaurants.Contracts.csproj" />
+    <ProjectReference Include="..\XRest.Shared\XRest.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

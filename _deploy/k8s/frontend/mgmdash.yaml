@@ -1,0 +1,68 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mgm-data-js
+  namespace: frontend
+data:
+  data-js: |
+   const menuItems = [
+    {
+        name: "Logi - seq",
+        link: "/seq/"
+    },
+    {
+        name: "RabbitMq (nieaktywne)",
+        link: "/rabbitmq/"
+    }
+   ]
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mgm-dash
+  namespace: frontend
+  labels:
+    app: mgm-dash
+spec:
+  restartPolicy: Always
+  containers:
+  - name: dashboard
+    image: xrest/mgmdash
+    imagePullPolicy: Never
+    resources:
+      requests:
+        memory: "300Mi"
+        cpu: "250m"
+      limits:
+        memory: "500Mi"
+        cpu: "500m"
+    ports:
+    - containerPort: 8081
+      name: http
+      protocol: TCP
+    volumeMounts:
+    - mountPath: /site/data
+      name: config-data
+  volumes:
+    - name: config-data
+      configMap:
+        name: mgm-data-js
+        items:
+        - key: data-js
+          path: items.js
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mgm-dash-svc
+  namespace: frontend
+spec:
+  type: ClusterIP
+  sessionAffinity: None
+  ports:
+    - name: http
+      port: 8081
+      targetPort: 8081
+  selector:
+    app: mgm-dash

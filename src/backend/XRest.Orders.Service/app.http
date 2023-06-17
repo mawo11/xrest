@@ -1,0 +1,6 @@
+@restId = 36
+
+### pobranie grup restauracji
+
+GET https://localhost:7000/menu/restaurant/{{restId}}/groups
+

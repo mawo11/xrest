@@ -1,0 +1,178 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: envoy-web-api-gw
+  namespace: frontend
+data:
+  envoy.yaml: |-
+    admin:
+      access_log_path: "/dev/null"
+      address:
+        socket_address:
+          address: 0.0.0.0
+          port_value: 8001
+    static_resources:
+      listeners:
+      - address:
+          socket_address:
+            address: 0.0.0.0
+            port_value: 8080
+        filter_chains:
+        - filters:
+          - name: envoy.filters.network.http_connection_manager
+            typed_config:
+              "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+              stat_prefix: ingress_http
+              codec_type: AUTO
+              route_config:
+                name: xrest_backend
+                virtual_hosts:
+                - name: xrest_backend
+                  domains:
+                  - ["*"]
+                  routes:
+                  - name: ""
+                    match:
+                      prefix: "/identity-api/"
+                    route:
+                      prefix_rewrite: "/"
+                      auto_host_rewrite: true
+                      cluster: xrest-identity-api-svc
+                  - name: "images-api"
+                    match:
+                      prefix: "/images-api/"
+                    route:
+                      prefix_rewrite: "/"
+                      auto_host_rewrite: true
+                      cluster: xrest-images-api-svc
+                  - name: "orders-api"
+                    match:
+                      prefix: "/orders-api/"
+                    route:
+                      prefix_rewrite: "/"
+                      auto_host_rewrite: true
+                      cluster: xrest-orders-api-svc
+                  - name: "restaurants-api"
+                    match:
+                      prefix: "/restaurants-api/"
+                    route:
+                      prefix_rewrite: "/"
+                      auto_host_rewrite: true
+                      cluster: xrest-restaurants-api-svc
+              http_filters:
+              - name: envoy.filters.http.router
+      clusters:
+      - name: xrest-identity-api-svc
+        connect_timeout: 0.25s
+        type: strict_dns
+        lb_policy: round_robin
+        load_assignment:
+          cluster_name: xrest-identity-api-svc
+          endpoints:
+          - lb_endpoints:
+            - endpoint:
+                address:
+                  socket_address:
+                    address: xrest-identity-api-svc.backend.svc.cluster.local
+                    port_value: 80
+
+      - name: xrest-images-api-svc
+        connect_timeout: 0.25s
+        type: strict_dns
+        lb_policy: round_robin
+        load_assignment:
+          cluster_name: xrest-images-api-svc
+          endpoints:
+          - lb_endpoints:
+            - endpoint:
+                address:
+                  socket_address:
+                    address: xrest-images-api-svc.backend.svc.cluster.local
+                    port_value: 80
+      - name: xrest-orders-api-svc
+        connect_timeout: 0.25s
+        type: strict_dns
+        lb_policy: round_robin
+        load_assignment:
+          cluster_name: xrest-orders-api-svc
+          endpoints:
+          - lb_endpoints:
+            - endpoint:
+                address:
+                  socket_address:
+                    address: xrest-orders-api-svc.backend.svc.cluster.local
+                    port_value: 80
+      - name: xrest-restaurants-api-svc
+        connect_timeout: 0.25s
+        type: strict_dns
+        lb_policy: round_robin
+        load_assignment:
+          cluster_name: xrest-restaurants-api-svc
+          endpoints:
+          - lb_endpoints:
+            - endpoint:
+                address:
+                  socket_address:
+                    address: xrest-restaurants-api-svc.backend.svc.cluster.local
+                    port_value: 80
+
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: gw-web-api
+  namespace: frontend
+  labels:
+    app: gw-web-api
+spec:
+  volumes:
+    - name: config
+      configMap:
+        name: envoy-web-api-gw
+        items:
+          - key: envoy.yaml
+            path: envoy.yaml
+  containers:
+    - name:  gw-web-api
+      image: envoyproxy/envoy:v1.21.0
+      ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        - name: admin
+          containerPort: 8001
+          protocol: TCP
+      env:
+        - name: PATH_BASE
+          value: /web/api
+      resources:
+        requests:
+          memory: "300Mi"
+          cpu: "250m"
+        limits:
+          memory: "500Mi"
+          cpu: "500m"
+      volumeMounts:
+        - name: config
+          mountPath: /etc/envoy
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      imagePullPolicy: Always
+  restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gw-web-api-svc
+  namespace: frontend
+spec:
+  type: ClusterIP
+  sessionAffinity: None
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: gw-web-api
+

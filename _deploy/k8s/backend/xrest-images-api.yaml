@@ -1,0 +1,65 @@
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: xrest-images-api
+  namespace: backend
+  labels:
+    app: xrest-images-api
+spec:
+  restartPolicy: Always
+  containers:
+  - name: xrest-images-api
+    image: xrest/xrest-images-api
+    resources:
+      requests:
+        memory: "300Mi"
+        cpu: "250m"
+      limits:
+        memory: "500Mi"
+        cpu: "500m"
+    imagePullPolicy: Never
+    ports:
+    - containerPort: 80
+    env:
+    - name: CONSUL_ADDR
+      value: "http://consul-server.common-services.svc.cluster.local:8500"
+    - name: CONSUL_ENV
+      value: "dev"
+    - name: CONSUL_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: consul-dev-token
+          key: token
+    - name: APP_ADDR
+      value: "xrest-images-api-svc.backend.svc.cluster.local"
+    - name: APP_PORT
+      value: "80"
+    - name: SEQ_URL
+      value: "http://seq-dev.common-services.svc.cluster.local"
+    - name: SEQ_API_KEY
+      valueFrom:
+        secretKeyRef:
+          name: seq-api-key-token
+          key: xrest-images
+    volumeMounts:
+        - name: image-dir
+          mountPath: /mnt/images
+  volumes:
+  - name: image-dir
+    hostPath:
+      path: /mnt/d/_kubernetes/.volumes/images
+      type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: xrest-images-api-svc
+  namespace: backend
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: xrest-images-api

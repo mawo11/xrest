@@ -1,0 +1,15 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: consul-dev
+  namespace: common-services
+spec:
+  type: NodePort
+  ports:
+    - port: 8500
+      targetPort: 8500
+      nodePort: 31001
+  selector:
+    app: consul
+    component: server

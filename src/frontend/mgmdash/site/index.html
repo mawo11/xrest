@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="mawo11@gmail.com">
+  <title>MGM - Dashboard</title>
+  <link href="content/css/bootstrap.min.css" rel="stylesheet">
+  <script src="content/scripts/vue.min.js" type="text/javascript"></script>
+</head>
+<body>
+  <header>
+    <div class="navbar navbar-dark bg-dark shadow-sm">
+      <div class="container">
+        <a href="#" class="navbar-brand d-flex align-items-center">
+          <strong>MGM Dashboard</strong>
+        </a>
+      </div>
+    </div>
+  </header>
+  <main id="app"> 
+    <div class="album py-5 bg-light">
+      <div class="container">
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3" v-for="item in items" :key="item.name">
+          <div class="col">
+            <div class="card shadow-sm">
+              <div class="card-body">
+                <p class="card-text">{{item.name}}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" v-on:click="callApp(item)">View</button>
+                  </div>
+               
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script src="data/items.js"></script>
+  <script src="content/scripts/app.js"></script>
+</body>
+</html>

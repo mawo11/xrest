@@ -1,0 +1,86 @@
+---
+kind: ConfigMap 
+apiVersion: v1 
+metadata:
+  name: mssql
+  namespace: common-services
+data:
+  mssql.conf: |
+    [EULA]
+    accepteula = true
+    accepteulaml = true
+    
+    [coredump]
+    captureminiandfull = true
+    coredumptype = full
+    
+    [hadr]
+    hadrenabled = 1
+    
+    [language]
+    lcid = 1033
+
+    [sqlagent]
+    enabled = true
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mssql-deployment-dev
+  namespace: common-services
+spec:
+  replicas: 1
+  selector:
+     matchLabels:
+       app: mssql-dev
+  template:
+    metadata:
+      labels:
+        app: mssql-dev
+    spec:
+      containers:
+      - name: mssql
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        resources:
+          requests:
+            memory: "2G"
+            cpu: "2000m"
+          limits:
+            memory: "2G"
+            cpu: "2000m"
+        ports:
+        - containerPort: 1433
+        env:
+        - name: MSSQL_PID
+          value: "Developer"
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: MSSQL_SA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mssql-sa-password
+              key: password
+        volumeMounts:
+        - name: mssqldb
+          mountPath: /var/opt/mssql/data
+      volumes:
+      - name: mssqldb
+        hostPath:
+          path: /mnt/d/_kubernetes/.volumes/sql
+          type: DirectoryOrCreate
+   
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mssql-deployment-dev
+  namespace: common-services
+spec:
+  selector:
+    app: mssql-dev
+  ports:
+    - protocol: TCP
+      port: 1433
+      targetPort: 1433
+  type: ClusterIP

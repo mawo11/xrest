@@ -1,0 +1,35 @@
+---
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: rabbitmq-dev
+  labels:
+    app.kubernetes.io/name: rabbitmq-dev
+    app.kubernetes.io/instance: rabbitmq-dev
+spec:
+  replicas: 1
+  override:
+    statefulSet:
+      spec:
+        template:
+          spec:
+            restartPolicy: Always
+            containers:
+            - name: rabbitmq
+              volumeMounts:
+              - mountPath: /config-init/
+                name: rabbitmq-dev-config-init
+              - mountPath: /var/lib/rabbitmq/mnesia/
+                name: rabbitmq-data
+            volumes:
+            - name: rabbitmq-data
+              persistentVolumeClaim:
+                claimName: rabbitmq-local-storage-claim
+            - name: rabbitmq-dev-config-init
+              configMap:
+                name: rabbitmq-dev-config
+  rabbitmq:
+    additionalConfig: |
+      load_definitions = /config-init/def.json
+
+      

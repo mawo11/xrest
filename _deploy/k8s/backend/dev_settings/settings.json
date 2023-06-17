@@ -1,0 +1,106 @@
+[
+  {
+    "key": "ConnectionStrings/db",
+    "value": "data source=mssql-deployment-dev.default.svc.cluster.local;initial catalog=xrest_dev;user id=xrest_dev;password=xrest_dev!@#$12314;Encrypt=False;TrustServerCertificate=True;MultipleActiveResultSets=True;Min Pool Size=5; Max Pool Size=20"
+  },
+  {
+    "key": "ExternalAuthenticate/Client1url",
+    "value": "http://localhost:5000/customer/external-login/{0}"
+  },
+  {
+    "key": "ExternalAuthenticate/Client2url",
+    "value": "http://localhost/login-id/{0}"
+  },
+  {
+    "key": "ExternalAuthenticate/FacebookEnable",
+    "value": "true"
+  },
+  {
+    "key": "ExternalAuthenticate/GoogleEnable",
+    "value": "true"
+  },
+  {
+    "key": "IdentityWeb/ActivationUrl",
+    "value": "http://localhost:5000/customer/activation/{token}"
+  },
+  {
+    "key": "Identity/AppTokenValidMinutes",
+    "value": "15"
+  },
+  {
+    "key": "Identity/CreateAccountTokenValidMinutes",
+    "value": "60"
+  },
+  {
+    "key": "ExternalAuthenticate/ExternalAuthenticateAppUrl",
+    "value": "http://localhost:7008/"
+  },
+  {
+    "key": "Identity/LogonTokenValidMinutes",
+    "value": "10"
+  },
+  {
+    "key": "Identity/ResetPasswordTokenValidMinutes",
+    "value": "60"
+  },
+  {
+    "key": "IdentityWeb/ResetPasswordUrl",
+    "value": "http://localhost:5000/customer/reset-password/{token}"
+  },
+  {
+    "key": "Identity/TermsCacheMinutes",
+    "value": "60"
+  },
+  {
+    "key": "Media/ImagesDirectory",
+    "value": "d:\\www\\dev\\images"
+  },
+  {
+    "key": "Orders/BagId",
+    "value": "299"
+  },
+  {
+    "key": "Orders/MaxProductsPerOrder",
+    "value": "100"
+  },
+  {
+    "key": "Przelewy24/Przelewy24Url",
+    "value": "https://sandbox.przelewy24.pl/"
+  },
+  {
+    "key": "Przelewy24/ReturnUrl",
+    "value": "http://localhost/"
+  },
+  {
+    "key": "Przelewy24/StatusUrl",
+    "value": "http://localhost/"
+  },
+  {
+    "key": "Restaurants/PaymentCacheMinutes",
+    "value": "60"
+  },
+  {
+    "key": "Identity/TokenKey",
+    "value": "<<token>>"
+  },
+  {
+    "key": "ExternalAuthenticate/Facebook/AppId",
+    "value": "<<appid>>"
+  },
+  {
+    "key": "ExternalAuthenticate/Facebook/Secret",
+    "value": "<<secret>>"
+  },
+  {
+    "key": "ExternalAuthenticate/Google/AppId",
+    "value": "<<appid>>"
+  },
+  {
+    "key": "ExternalAuthenticate/Google/Secret",
+    "value": "<<secret>>"
+  },
+  {
+    "key": "Identity/defaultPoints",
+    "value": "50"
+  }
+]

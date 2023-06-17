@@ -1,0 +1,46 @@
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: rabbitmq-local-vol
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: Immediate
+allowVolumeExpansion: true
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  labels:
+    type: rabbitmq-data-volume
+  name: rabbitmq-data-volume
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 8G
+  hostPath:
+    path: /mnt/d/_kubernetes/.volumes/rabbitmq
+    type: ""
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/arch
+          operator: In
+          values:
+          - amd64
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: rabbitmq-local-vol
+  volumeMode: Filesystem
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rabbitmq-local-storage-claim
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 500Mi
+  storageClassName: rabbitmq-local-vol

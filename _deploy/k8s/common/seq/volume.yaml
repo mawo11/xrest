@@ -1,0 +1,40 @@
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: seqlocal
+  namespace: common-services
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: Immediate
+allowVolumeExpansion: true
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: seq-local-storage
+  namespace: common-services
+  labels:
+    type: local
+spec:
+  storageClassName: seqlocal 
+  capacity:
+    storage: 10Mi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: "/mnt/d/_kubernetes/.volumes/seq/"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: seq-local-storage-claim
+  namespace: common-services
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Mi
+  storageClassName: seqlocal

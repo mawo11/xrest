@@ -1,0 +1,60 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: xrest-ordering-env-js
+  namespace: frontend
+data:
+  xrest-ordering-env-js: |
+   const apiUrl = 'http://api.xrest.pl'
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: xrest-ordering-app
+  namespace: frontend
+  labels:
+    app: xrest-ordering-app
+spec:
+  restartPolicy: Always
+  containers:
+  - name: xrest-ordering-app
+    image: xrest/xrest-ordering-app
+    imagePullPolicy: Never
+    resources:
+      requests:
+        memory: "300Mi"
+        cpu: "250m"
+      limits:
+        memory: "500Mi"
+        cpu: "500m"
+    ports:
+    - containerPort: 80
+      name: http
+      protocol: TCP
+    volumeMounts:
+    - name: config-data
+      mountPath: /usr/share/nginx/html/env.js
+      subPath: env.js
+  volumes:
+    - name: config-data
+      configMap:
+        name: xrest-ordering-env-js
+        items:
+        - key: xrest-ordering-env-js
+          path: env.js
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: xrest-ordering-app-svc
+  namespace: frontend
+spec:
+  type: ClusterIP
+  sessionAffinity: None
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+  selector:
+    app: xrest-ordering-app

@@ -1,0 +1,25 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: x-kebab-management-rabbitmq
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: 'false'
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/ssl-redirect: 'false'
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+spec:
+  rules:
+  - host: mgm.xrest.pl
+    http:
+      paths:
+      - path: /rabbitmq(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: rabbitmq-dev-dashboard
+            port:
+              number: 15672
+
+

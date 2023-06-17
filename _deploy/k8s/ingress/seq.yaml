@@ -1,0 +1,38 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: seq-dev
+spec:
+  externalName: seq-dev.common-services.svc.cluster.local
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  sessionAffinity: None
+  type: ExternalName
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: xrest-management-seq
+
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: 'false'
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/ssl-redirect: 'false'
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+spec:
+  rules:
+  - host: mgm.xrest.pl
+    http:
+      paths:
+      - path: /seq(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: seq-dev
+            port:
+              number: 80 
+
