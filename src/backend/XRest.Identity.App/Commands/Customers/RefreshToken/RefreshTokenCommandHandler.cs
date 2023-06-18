@@ -28,7 +28,7 @@ public sealed class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCom
 
 	public async Task<TokenData> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
 	{
-		_logger.LogDebug("RefreshTokenCommandHandler" + CustomJsonSerializer.Serialize(request));
+		_logger.LogDebug("RefreshTokenCommandHandler {data}", CustomJsonSerializer.Serialize(request));
 
 		RefreshTokenData tokenData = await _tokenRepository.GetByTokenAsync(request.Token);
 		if (tokenData == null)
